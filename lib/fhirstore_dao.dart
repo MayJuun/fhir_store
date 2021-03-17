@@ -8,7 +8,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 // Dao for working with FHIR objects, should look similar to fhir_db
 class FhirStoreDao {
   FhirStoreDao();
-  CollectionReference _collection;
+  late CollectionReference _collection;
   final auth = FirebaseAuth.instance;
 
   bool _loggedIn() {
@@ -29,7 +29,7 @@ class FhirStoreDao {
     if (_types.data() == null) {
       return <String>[];
     } else if (_types.data() is Map) {
-      if (_types.data().isEmpty) {
+      if (_types.data()?.isEmpty ?? false) {
         return <String>[];
       }
       final resourceTypes = _types['resourceTypes'];
@@ -57,49 +57,51 @@ class FhirStoreDao {
   /// this is to save newly created or old resources that have been updated
   Future<Resource> save(Resource resource) async {
     _loggedIn();
-    if (resource != null) {
-      if (resource.resourceType != null) {
-        if (resource.id.toString().contains('_history')) {
-          final collectionType =
-              '${ResourceUtils.resourceTypeToStringMap[resource.resourceType]}'
-              '_history';
-          _setCollectionType(collectionType);
-          await _collection
-              .doc('${resource.id}_v${resource.meta.versionId}')
-              .set(resource.toJson());
-        } else {
-          final collectionType =
-              ResourceUtils.resourceTypeToStringMap[resource.resourceType];
-          print('a');
+
+    if (resource.resourceType != null) {
+      if (resource.id.toString().contains('_history')) {
+        final collectionType =
+            '${ResourceUtils.resourceTypeToStringMap[resource.resourceType]}'
+            '_history';
+        _setCollectionType(collectionType);
+        await _collection
+            .doc('${resource.id}_v${resource.meta?.versionId}')
+            .set(resource.toJson());
+      } else {
+        final collectionType =
+            ResourceUtils.resourceTypeToStringMap[resource.resourceType];
+        print('a');
+        if (collectionType != null) {
           await _addCollectionType(collectionType);
-          print('b');
-          _setCollectionType(collectionType);
-          final _newResource = resource.newVersion();
-          await _collection
-              .doc(_newResource.id.toString())
-              .set(_newResource.toJson(), SetOptions(merge: true));
-          return _newResource;
         }
+        print('b');
+        if (collectionType != null) {
+          _setCollectionType(collectionType);
+        }
+        final _newResource = resource.newVersion();
+        await _collection
+            .doc(_newResource.id.toString())
+            .set(_newResource.toJson(), SetOptions(merge: true));
+        return _newResource;
       }
-      throw const FormatException('ResourceType cannot be null');
     }
-    throw const FormatException('Resource to save cannot be null');
+    throw const FormatException('ResourceType cannot be null');
   }
 
   // how to get a specific resource
-  Future<Resource> find({
-    Resource resource,
-    String resourceType,
-    Id id,
-    String field,
-    String value,
+  Future<Resource?> find({
+    Resource? resource,
+    String? resourceType,
+    Id? id,
+    required String field,
+    required String value,
   }) async {
     _loggedIn();
     String searchType;
     String searchId;
     if (resource != null || (resourceType != null && id != null)) {
       if (resource == null) {
-        searchType = resourceType;
+        searchType = resourceType!;
         searchId = id.toString();
       } else {
         searchType = resource.resourceType.toString();
@@ -115,20 +117,20 @@ class FhirStoreDao {
 
   /// get all of single type of resource
   Future<List<Resource>> getResourceType({
-    List<R4ResourceType> resourceTypes,
-    List<String> resourceTypeStrings,
-    Resource resource,
+    List<R4ResourceType>? resourceTypes,
+    List<String>? resourceTypeStrings,
+    Resource? resource,
   }) async {
     _loggedIn();
     final collectionTypes = <String>{};
     if (resource?.resourceType != null) {
       collectionTypes
-          .add(ResourceUtils.resourceTypeToStringMap[resource.resourceType]);
+          .add(ResourceUtils.resourceTypeToStringMap[resource!.resourceType]!);
     }
     if (resourceTypes != null) {
       if (resourceTypes.isNotEmpty) {
         for (final type in resourceTypes.toSet()) {
-          collectionTypes.add(ResourceUtils.resourceTypeToStringMap[type]);
+          collectionTypes.add(ResourceUtils.resourceTypeToStringMap[type]!);
         }
       }
     }
@@ -139,7 +141,9 @@ class FhirStoreDao {
       final query = _collection.where('resourceType', isEqualTo: type);
       final result = await query.get();
       for (final doc in result.docs) {
-        results.add(Resource.fromJson(doc.data()));
+        if (doc.data() != null) {
+          results.add(Resource.fromJson(doc.data()!));
+        }
       }
     }
     return results;
@@ -147,22 +151,23 @@ class FhirStoreDao {
 
   Future<List<Resource>> getAll() async {
     _loggedIn();
-    await getResourceType(resourceTypeStrings: await _getResourceTypes());
+    return await getResourceType(
+        resourceTypeStrings: await _getResourceTypes());
   }
 
   Future<void> delete({
-    Resource resource,
-    String resourceType,
-    Id id,
-    String field,
-    String value,
+    Resource? resource,
+    String? resourceType,
+    Id? id,
+    required String field,
+    required String value,
   }) async {
     _loggedIn();
     String deleteType;
     String deleteId;
     if (resource != null || (resourceType != null && id != null)) {
       if (resource == null) {
-        deleteType = resourceType;
+        deleteType = resourceType!;
         deleteId = id.toString();
       } else {
         deleteType = resource.resourceType.toString();
@@ -177,16 +182,18 @@ class FhirStoreDao {
   }
 
   Future deleteSingleType({
-    R4ResourceType resourceType,
-    Resource resource,
+    R4ResourceType? resourceType,
+    Resource? resource,
   }) async {
     _loggedIn();
     if (resourceType != null || resource?.resourceType != null) {
-      final String deleteType = ResourceUtils
-          .resourceTypeToStringMap[resourceType ?? resource.resourceType];
-      _setCollectionType(deleteType);
-      await _collection.doc().delete();
-      await _removeCollectionTypes([deleteType]);
+      final String? deleteType = ResourceUtils
+          .resourceTypeToStringMap[resourceType ?? resource!.resourceType];
+      if (deleteType != null) {
+        _setCollectionType(deleteType);
+        await _collection.doc().delete();
+        await _removeCollectionTypes([deleteType]);
+      }
     }
   }
 

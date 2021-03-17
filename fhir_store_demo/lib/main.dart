@@ -7,6 +7,8 @@ import 'package:get/get.dart';
 
 import 'new_patient.dart';
 
+const _client_id =
+    '439341535406-hp7aq9hb4pgjej0jc002fqhurakil0gh.apps.googleusercontent.com';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Firebase.initializeApp();
@@ -16,7 +18,7 @@ Future<void> main() async {
 class MyApp extends StatelessWidget {
   final TextEditingController _email = TextEditingController();
   final TextEditingController _password = TextEditingController();
-  final login = FhirstoreLogin.loginEmail();
+  final login = FhirstoreLogin();
 
   SizedBox _heightBox(double size) => SizedBox(height: Get.height * size);
 
