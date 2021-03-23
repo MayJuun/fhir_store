@@ -1,11 +1,9 @@
 # This is a generated file; do not edit or check into version control.
-cloud_firestore=/home/grey/.pub-cache/hosted/pub.dartlang.org/cloud_firestore-1.0.1/
-cloud_firestore_web=/home/grey/.pub-cache/hosted/pub.dartlang.org/cloud_firestore_web-1.0.1/
-firebase_analytics=/home/grey/.pub-cache/hosted/pub.dartlang.org/firebase_analytics-7.1.1/
-firebase_analytics_web=/home/grey/.pub-cache/hosted/pub.dartlang.org/firebase_analytics_web-0.2.0+1/
-firebase_auth=/home/grey/.pub-cache/hosted/pub.dartlang.org/firebase_auth-1.0.1/
-firebase_auth_web=/home/grey/.pub-cache/hosted/pub.dartlang.org/firebase_auth_web-1.0.2/
-firebase_core=/home/grey/.pub-cache/hosted/pub.dartlang.org/firebase_core-1.0.1/
-firebase_core_web=/home/grey/.pub-cache/hosted/pub.dartlang.org/firebase_core_web-1.0.1/
-google_sign_in=/home/grey/.pub-cache/hosted/pub.dartlang.org/google_sign_in-5.0.0/
-google_sign_in_web=/home/grey/.pub-cache/hosted/pub.dartlang.org/google_sign_in_web-0.10.0/
+cloud_firestore=/home/grey/snap/flutter/common/flutter/.pub-cache/hosted/pub.dartlang.org/cloud_firestore-1.0.2/
+cloud_firestore_web=/home/grey/snap/flutter/common/flutter/.pub-cache/hosted/pub.dartlang.org/cloud_firestore_web-1.0.2/
+firebase_auth=/home/grey/snap/flutter/common/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_auth-1.0.1/
+firebase_auth_web=/home/grey/snap/flutter/common/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_auth_web-1.0.3/
+firebase_core=/home/grey/snap/flutter/common/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_core-1.0.2/
+firebase_core_web=/home/grey/snap/flutter/common/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_core_web-1.0.2/
+google_sign_in=/home/grey/snap/flutter/common/flutter/.pub-cache/hosted/pub.dartlang.org/google_sign_in-5.0.1/
+google_sign_in_web=/home/grey/snap/flutter/common/flutter/.pub-cache/hosted/pub.dartlang.org/google_sign_in_web-0.10.0/
