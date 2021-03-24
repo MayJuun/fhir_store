@@ -1,6 +1,5 @@
 import 'package:fhir_store/fhirstore_dao.dart';
 import 'package:fhir_store/fhirstore_login.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -25,111 +24,103 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       title: 'Fhirestore_Cloud Demo',
       home: Scaffold(
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            _heightBox(0.05),
-            Container(
-              width: Get.width * .7,
-              height: Get.height * 0.08,
-              child: TextField(
-                obscureText: false,
-                controller: _email,
-                decoration: InputDecoration(
-                  labelText: 'Username',
-                  prefixIcon: const Icon(Icons.person),
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(Get.width * 0.05)),
-                ),
-              ),
-            ),
-            _heightBox(0.01),
-            Container(
-              width: Get.width * .7,
-              height: Get.height * 0.08,
-              child: TextField(
-                controller: _password,
-                decoration: InputDecoration(
-                  labelText: 'Password',
-                  prefixIcon: const Icon(Icons.lock),
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(Get.width * 0.05)),
-                ),
-              ),
-            ),
-            _heightBox(0.05),
-            Container(
-              width: Get.width * .7,
-              height: Get.height * 0.07,
-              child: ElevatedButton(
-                style: ButtonStyle(
-                  foregroundColor:
-                      MaterialStateProperty.all<Color>(Colors.blue),
-                  shape: MaterialStateProperty.all<OutlinedBorder>(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(Get.width * 0.05),
-                    ),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              _heightBox(0.05),
+              Container(
+                width: Get.width * .7,
+                height: Get.height * 0.08,
+                child: TextField(
+                  obscureText: false,
+                  controller: _email,
+                  decoration: InputDecoration(
+                    labelText: 'Username',
+                    prefixIcon: const Icon(Icons.person),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(Get.width * 0.05)),
                   ),
                 ),
-                onPressed: () {
-                  // login.emailLogin(_email.text, _password.text);
-                  login.googleLogin();
-                },
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    const Text('Login'),
-                  ],
+              ),
+              _heightBox(0.01),
+              Container(
+                width: Get.width * .7,
+                height: Get.height * 0.08,
+                child: TextField(
+                  controller: _password,
+                  decoration: InputDecoration(
+                    labelText: 'Password',
+                    prefixIcon: const Icon(Icons.lock),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(Get.width * 0.05)),
+                  ),
                 ),
               ),
-            ),
-            // Container(
-            //   width: Get.width * .7,
-            //   height: Get.height * 0.07,
-            //   child: ElevatedButton(
-            //     style: ButtonStyle(
-            //       foregroundColor:
-            //           MaterialStateProperty.all<Color>(Colors.blue),
-            //       shape: MaterialStateProperty.all<OutlinedBorder>(
-            //         RoundedRectangleBorder(
-            //           borderRadius: BorderRadius.circular(Get.width * 0.05),
-            //         ),
-            //       ),
-            //     ),
-            //     onPressed: () {
-            //       _uploadPatient();
-            //     },
-            //     child: Row(
-            //       mainAxisAlignment: MainAxisAlignment.center,
-            //       children: <Widget>[
-            //         const Text('Upload Patient'),
-            //       ],
-            //     ),
-            //   ),
-            // ),
-            // Container(
-            //   width: Get.width * .7,
-            //   height: Get.height * 0.07,
-            //   child: ElevatedButton(
-            //     style: ButtonStyle(
-            //       foregroundColor:
-            //           MaterialStateProperty.all<Color>(Colors.blue),
-            //       shape: MaterialStateProperty.all<OutlinedBorder>(
-            //         RoundedRectangleBorder(
-            //           borderRadius: BorderRadius.circular(Get.width * 0.05),
-            //         ),
-            //       ),
-            //     ),
-            //     onPressed: () async => await FirebaseAuth.instance.signOut(),
-            //     child: Row(
-            //       mainAxisAlignment: MainAxisAlignment.center,
-            //       children: <Widget>[
-            //         const Text('Signout'),
-            //       ],
-            //     ),
-            //   ),
-            // ),
-          ],
+              _heightBox(0.05),
+              Container(
+                width: Get.width * .7,
+                height: Get.height * 0.07,
+                child: ElevatedButton(
+                  style: ButtonStyle(
+                    foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.blue),
+                    shape: MaterialStateProperty.all<OutlinedBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(Get.width * 0.05),
+                      ),
+                    ),
+                  ),
+                  onPressed: () async {
+                    await login.emailLogin(_email.text, _password.text);
+                  },
+                  child:
+                      Text('Password', style: TextStyle(color: Colors.white)),
+                ),
+              ),
+              _heightBox(0.05),
+              Container(
+                width: Get.width * .7,
+                height: Get.height * 0.07,
+                child: ElevatedButton(
+                  style: ButtonStyle(
+                    foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.blue),
+                    shape: MaterialStateProperty.all<OutlinedBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(Get.width * 0.05),
+                      ),
+                    ),
+                  ),
+                  onPressed: () async {
+                    await login.googleLogin();
+                  },
+                  child: Text('Google', style: TextStyle(color: Colors.white)),
+                ),
+              ),
+              _heightBox(0.05),
+              Container(
+                width: Get.width * .7,
+                height: Get.height * 0.07,
+                child: ElevatedButton(
+                  style: ButtonStyle(
+                    foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.blue),
+                    shape: MaterialStateProperty.all<OutlinedBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(Get.width * 0.05),
+                      ),
+                    ),
+                  ),
+                  onPressed: () async {
+                    await login.logout();
+                  },
+                  child: Text('Logout', style: TextStyle(color: Colors.white)),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
