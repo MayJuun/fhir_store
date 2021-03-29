@@ -1,45 +1,44 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fhir_store/async_state.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:remote_state/remote_state.dart';
 
 class FhirstoreLogin {
   FhirstoreLogin();
 
   FirebaseAuth auth = FirebaseAuth.instance;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
+  Rx<AsyncState> state = AsyncState.initial().obs;
   GoogleSignIn googleSignIn = GoogleSignIn();
-  bool isLoggedIn = false;
-  Rx<RemoteState<dynamic>> state = RemoteState<dynamic>.initial().obs;
 
   Future<void> emailLogin(String email, String password) async {
-    state.value = RemoteState<dynamic>.loading();
+    state.value = AsyncState.loading();
     try {
-      final userCredentials = await FirebaseAuth.instance
-          .signInWithEmailAndPassword(email: email, password: password);
-      print(userCredentials.additionalUserInfo?.username);
-      isLoggedIn = true;
-      state.value = RemoteState<dynamic>.success(true);
-      print('success');
-      final users = firestore.collection('users');
-      users.doc(email).get().then((value) => print(value.data()));
+      final credentials = await auth.signInWithEmailAndPassword(
+          email: email, password: password);
+      print(credentials);
+      state.value = AsyncState.success();
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
-        state.value =
-            RemoteState<dynamic>.error('No user found for that email.');
+        state.value = AsyncState.error(
+            display: 'No user found for that email.', error: e);
       } else if (e.code == 'wrong-password') {
-        state.value = RemoteState<dynamic>.error(
-            'Wrong password provided for that user.');
+        state.value = AsyncState.error(
+            display: 'Wrong password provided for that user.', error: e);
       }
     } catch (e) {
-      state.value = RemoteState<dynamic>.error(e);
+      state.value = AsyncState.error(error: e);
     }
+    print(state.value);
   }
 
   Future<void> googleLogin() async {
+    state.value = AsyncState.loading();
     try {
-      final googleUser = await GoogleSignIn().signIn();
+      print(googleSignIn.clientId);
+      final googleUser = await googleSignIn.signIn();
+      print(googleUser == null);
       if (googleUser != null) {
         final googleAuth = await googleUser.authentication;
         final credential = GoogleAuthProvider.credential(
@@ -60,8 +59,10 @@ class FhirstoreLogin {
         });
       }
     } catch (e) {
-      print(e);
+      state.value =
+          AsyncState.error(display: 'Error with google signin', error: e);
     }
+    print(state.value);
   }
 
   Future<void> logout() async {

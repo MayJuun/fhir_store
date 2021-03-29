@@ -1,4 +1,4 @@
-package dev.fhirfli.mayjuun_authdemo
+package dev.fhirfli.mayjuunauthdemo
 
 import io.flutter.embedding.android.FlutterActivity
 

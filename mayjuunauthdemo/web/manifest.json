@@ -1,6 +1,6 @@
 {
-    "name": "mayjuun_authdemo",
-    "short_name": "mayjuun_authdemo",
+    "name": "mayjuunauthdemo",
+    "short_name": "mayjuunauthdemo",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

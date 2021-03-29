@@ -3,6 +3,7 @@ import 'package:fhir_store/fhirstore_login.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'new_patient.dart';
 
@@ -24,6 +25,7 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       title: 'Fhirestore_Cloud Demo',
       home: Scaffold(
+        resizeToAvoidBottomInset: false,
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -114,6 +116,26 @@ class MyApp extends StatelessWidget {
                     ),
                   ),
                   onPressed: () async {
+                    await _uploadPatient();
+                  },
+                  child: Text('Upload', style: TextStyle(color: Colors.white)),
+                ),
+              ),
+              _heightBox(0.05),
+              Container(
+                width: Get.width * .7,
+                height: Get.height * 0.07,
+                child: ElevatedButton(
+                  style: ButtonStyle(
+                    foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.blue),
+                    shape: MaterialStateProperty.all<OutlinedBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(Get.width * 0.05),
+                      ),
+                    ),
+                  ),
+                  onPressed: () async {
                     await login.logout();
                   },
                   child: Text('Logout', style: TextStyle(color: Colors.white)),
@@ -132,6 +154,9 @@ Future _uploadPatient() async {
   final fhirStoreDao = FhirStoreDao();
   try {
     await fhirStoreDao.save(patient);
+    await FirebaseFirestore.instance.collection('users').doc('newUser').set(
+        {'name': 'Grey II', 'company': 'Fake Greys ${DateTime.now()}'},
+        SetOptions(merge: true));
   } catch (e) {
     print(e);
   }

@@ -34,11 +34,14 @@ android {
     }
 
     defaultConfig {
-        applicationId "dev.fhirfli.mayjuun_authdemo"
+        applicationId "dev.fhirfli.mayjuunauthdemo"
         minSdkVersion 23
         targetSdkVersion 30
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+        manifestPlaceholders = [
+            'appAuthRedirectScheme': 'dev.fhirfli.mayjuunauthdemo'
+        ]
     }
 
     buildTypes {

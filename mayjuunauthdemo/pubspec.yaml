@@ -1,4 +1,4 @@
-name: mayjuun_authdemo
+name: mayjuunauthdemo
 description: Library to test storing FHIR in Cloud Firestore
 
 environment:
