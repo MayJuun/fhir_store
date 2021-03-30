@@ -17,6 +17,7 @@ dependencies:
   firebase_auth: ^1.0.1
   firebase_core: ^1.0.2
   get: ^4.0.0-nullsafety.2
+  googleapis_auth: ^1.1.0
   google_sign_in: ^5.0.1
   remote_state: ^2.0.0
 

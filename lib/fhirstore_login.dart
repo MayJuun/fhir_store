@@ -3,6 +3,8 @@ import 'package:fhir_store/async_state.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import "package:http/http.dart" as http;
+import "package:googleapis_auth/auth_io.dart";
 
 class FhirstoreLogin {
   FhirstoreLogin();
@@ -18,6 +20,7 @@ class FhirstoreLogin {
       final credentials = await auth.signInWithEmailAndPassword(
           email: email, password: password);
       print(credentials);
+
       state.value = AsyncState.success();
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
@@ -33,31 +36,48 @@ class FhirstoreLogin {
     print(state.value);
   }
 
+  void prompt(String url) {
+    print("Please go to the following URL and grant access:");
+    print("  => $url");
+    print("");
+  }
+
   Future<void> googleLogin() async {
+    const gcsScopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    final clientId = ClientId(
+        '237580225838-ikk4r7enjpojiaf63bimpck6as3m1oft.apps.googleusercontent.com',
+        null);
+    var client = http.Client();
     state.value = AsyncState.loading();
     try {
-      print(googleSignIn.clientId);
-      final googleUser = await googleSignIn.signIn();
-      print(googleUser == null);
-      if (googleUser != null) {
-        final googleAuth = await googleUser.authentication;
-        final credential = GoogleAuthProvider.credential(
-          accessToken: googleAuth.accessToken,
-          idToken: googleAuth.idToken,
-        );
+      obtainAccessCredentialsViaUserConsent(clientId, gcsScopes, client, prompt)
+          .then((AccessCredentials credentials) {
+        print(credentials);
+        client.close();
+      });
 
-        await auth.signInWithCredential(credential);
+      // print(googleSignIn.clientId);
+      // final googleUser = await googleSignIn.signIn();
+      // print(googleUser == null);
+      // if (googleUser != null) {
+      //   final googleAuth = await googleUser.authentication;
+      //   final credential = GoogleAuthProvider.credential(
+      //     accessToken: googleAuth.accessToken,
+      //     idToken: googleAuth.idToken,
+      //   );
 
-        FirebaseFirestore.instance
-            .collection('users')
-            .doc('grey@fhirfli.dev')
-            .get()
-            .then((DocumentSnapshot documentSnapshot) {
-          if (documentSnapshot.exists) {
-            print(documentSnapshot.data());
-          }
-        });
-      }
+      //   await auth.signInWithCredential(credential);
+
+      //   FirebaseFirestore.instance
+      //       .collection('users')
+      //       .doc('grey@fhirfli.dev')
+      //       .get()
+      //       .then((DocumentSnapshot documentSnapshot) {
+      //     if (documentSnapshot.exists) {
+      //       print(documentSnapshot.data());
+      //     }
+      //   });
+      // }
     } catch (e) {
       state.value =
           AsyncState.error(display: 'Error with google signin', error: e);
